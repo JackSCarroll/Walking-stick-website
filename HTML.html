@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="stylesheet" href="styles.css">
     <script src="https://js.api.here.com/v3/3.1/mapsjs-core.js"
         type="text/javascript" charset="utf-8"></script>
     <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"
@@ -25,7 +26,9 @@
                type="text/javascript" charset="utf-8"></script>
 </head>
 <body>
-
+<div id="banner">
+    <H1>Smart Cane GPS Map</H1>
+</div>
 <div style="width: 640px; height: 480px" id="mapContainer"></div>
 <script>
     //Initialize the Platform object:
@@ -58,6 +61,30 @@
     // Create the default UI:
     var ui = H.ui.UI.createDefault(map, defaultLayers);
 </script>
-
+<style>
+    body{
+        background-color: lightcyan;
+    }
+    #banner{
+        top: 0px;
+        left: 0px;
+        position: fixed;
+        z-index: 2;
+        font-size: 17px;
+        background-color: #282A35;
+        color: #f1f1f1;
+        width: 100%;
+        padding: 0;
+        letter-spacing: 1px;
+        font-family: 'Source Sans Pro', sans-serif;
+        text-align: center;
+    }
+    #mapContainer{
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style>
 </body>
 </html>
