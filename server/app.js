@@ -11,8 +11,7 @@ app.listen(3000, () => {
     console.log("Server listening on 3000");
 });
 
-app.use('/', express.static('../client'))
-
+app.use('/', express.static('../client'));
 
 const serialPort = new SerialPort('/dev/ttyACM0', { // change path
     baudRate: 9600,
@@ -26,8 +25,8 @@ gps.on('data', data => {
     longitude = gps.state.lon
     console.log(latitude);
     console.log(longitude);
-})
+});
 
 serialPort.on('data', data => {
     gps.updatePartial(data);
-})
+});
