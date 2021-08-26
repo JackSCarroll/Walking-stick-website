@@ -1,0 +1,18 @@
+{
+  "name": "gpstrackerwalkingstick",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Anthony Papoutsis",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1",
+    "gps": "^0.6.0",
+    "request-promise": "^4.2.6",
+    "rquest": "^0.1.0",
+    "serialport": "^9.2.0"
+  }
+}
