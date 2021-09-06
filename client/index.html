@@ -1,31 +1,15 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="utf-8">
-<title>Display a map on a webpage</title>
-<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
-<link href="https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.css" rel="stylesheet">
-<script src="https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.js"></script>
-<style>
-body { margin: 0; padding: 0; background-color: darkslategrey;}
-#map { position: absolute; width: 50%; height: 50%; top: 25%; border: hotpink; border-radius: 10px;}
-.container{
-  display: flex;
-  justify-content: center;
-}
-.banner{
-  display: flex;
-  background-color: teal;
-  width: 100%;
-  height: 100px;
-  justify-content: center;
-  font-size: 50px;
-  font-family: Verdana, Geneva, Tahoma, sans-serif;
-  color: white;
-  line-height: 100px;
-}
-</style>
+  <meta charset="utf-8">
+  <title>Display a map on a webpage</title>
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.css" rel="stylesheet">
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.4.1/mapbox-gl.js"></script>
+  <link href="styles.css" rel="stylesheet">
 </head>
+
 <body>
   <div class="banner">
     Smart Cane GPS Map
@@ -33,17 +17,18 @@ body { margin: 0; padding: 0; background-color: darkslategrey;}
   <div class="container">
     <div id="map"></div>
   </div>
-<script>
-	// TO MAKE THE MAP APPEAR YOU MUST
-	// ADD YOUR ACCESS TOKEN FROM
-	// https://account.mapbox.com
-	mapboxgl.accessToken = 'pk.eyJ1IjoiYXBhcG91dHNpcyIsImEiOiJja3NzZ2Q0bmgwd2tkMm5wdWtteHVvd3M5In0.YfOjhqgCT00v9ggsxACvfA';
-const map = new mapboxgl.Map({
-container: 'map', // container ID
-style: 'mapbox://styles/mapbox/streets-v11', // style URL
-center: [145.004795728903,-37.82661008356922], // starting position [lng, lat]
-zoom: 15 // starting zoom
-});
-</script>
+  <script>
+    // TO MAKE THE MAP APPEAR YOU MUST
+    // ADD YOUR ACCESS TOKEN FROM
+    // https://account.mapbox.com
+    mapboxgl.accessToken = 'pk.eyJ1IjoiYXBhcG91dHNpcyIsImEiOiJja3NzZ2Q0bmgwd2tkMm5wdWtteHVvd3M5In0.YfOjhqgCT00v9ggsxACvfA';
+    const map = new mapboxgl.Map({
+      container: 'map', // container ID
+      style: 'mapbox://styles/mapbox/streets-v11', // style URL
+      center: [145.004795728903, -37.82661008356922], // starting position [lng, lat]
+      zoom: 15 // starting zoom
+    });
+  </script>
 </body>
-</html> -->
+
+</html>

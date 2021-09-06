@@ -1,0 +1,15 @@
+{
+  "name": "device",
+  "version": "1.0.0",
+  "description": "",
+  "main": "gps.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Anthony Papoutsis",
+  "license": "ISC",
+  "dependencies": {
+    "gps": "^0.6.0",
+    "serialport": "^9.2.1"
+  }
+}
