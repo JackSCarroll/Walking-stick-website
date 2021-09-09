@@ -24,14 +24,11 @@ const serialPort = new SerialPort('/dev/ttyACM0', { // change path
 gps.on('data', data => {
     latitude = gps.state.lat;
     longitude = gps.state.lon
-    latlong = [
-        {
-            "latitude": latitude
-        },
-        {
-            "longitude": longitude
-        }
-    ];
+    latlong =
+    {
+        lat: latitude,
+        long: longitude
+    };
     client.publish(topic, JSON.stringify(latlong));
     console.log(topic, JSON.stringify(latlong));
 });
