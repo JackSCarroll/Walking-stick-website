@@ -2,6 +2,12 @@
 // ADD YOUR ACCESS TOKEN FROM
 // https://account.mapbox.com
 
+
+fetch('https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=pk.eyJ1IjoiYXBhcG91dHNpcyIsImEiOiJja3NzZ2Q0bmgwd2tkMm5wdWtteHVvd3M5In0.YfOjhqgCT00v9ggsxACvfA')
+  .then(response => response.json())
+  .then(data => console.log(data));
+
+
 var socket;
 socket = io.connect();
 
