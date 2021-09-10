@@ -26,11 +26,9 @@ client.on('message', (topic, message) => {
     sleep(5000);
     latlong = message.toString();
     latlong = JSON.parse(latlong);
-    console.log(latlong.lat);
+    //console.log(latlong.lat);
     io.sockets.emit("coords", latlong);
 });
-
-
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));

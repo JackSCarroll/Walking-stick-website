@@ -1,13 +1,3 @@
-// TO MAKE THE MAP APPEAR YOU MUST
-// ADD YOUR ACCESS TOKEN FROM
-// https://account.mapbox.com
-
-
-fetch('https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=pk.eyJ1IjoiYXBhcG91dHNpcyIsImEiOiJja3NzZ2Q0bmgwd2tkMm5wdWtteHVvd3M5In0.YfOjhqgCT00v9ggsxACvfA')
-  .then(response => response.json())
-  .then(data => console.log(data));
-
-
 var socket;
 socket = io.connect();
 
@@ -15,24 +5,28 @@ socket.on("coords", getCoords)
 
 let latitude;
 let longitude;
+let longitudeS;
+let latitudeS;
+let address;
 
 function getCoords(data) {
     latitude = data.lat;
     longitude = data.long;
+    longitudeS = longitude.toString();
+    latitudeS = latitude.toString();
     //console.log(latitude);
 }
-
 
 mapboxgl.accessToken = 'pk.eyJ1IjoiYXBhcG91dHNpcyIsImEiOiJja3NzZ2Q0bmgwd2tkMm5wdWtteHVvd3M5In0.YfOjhqgCT00v9ggsxACvfA';
 const map = new mapboxgl.Map({
     container: 'map', // container ID
     style: 'mapbox://styles/mapbox/streets-v11', // style URL
+    center: [145.187, -37.925],
+    zoom: 10
 });
 
 const size = 200;
 
-// This implements `StyleImageInterface`
-// to draw a pulsing dot icon on the map.
 const pulsingDot = {
     width: size,
     height: size,
@@ -102,8 +96,16 @@ const pulsingDot = {
 };
 
 map.on('load', () => {
-    map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
+    let url = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + longitudeS + "," + latitudeS + ".json?access_token=pk.eyJ1IjoiYXBhcG91dHNpcyIsImEiOiJja3NzZ2Q0bmgwd2tkMm5wdWtteHVvd3M5In0.YfOjhqgCT00v9ggsxACvfA";
+    console.log(url)
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            address = data.features[0].place_name
+            console.log(address);
+        });
 
+    map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
     map.addSource('dot-point', {
         'type': 'geojson',
         'data': {
