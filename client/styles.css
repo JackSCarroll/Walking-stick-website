@@ -29,3 +29,13 @@ body {
     color: white;
     line-height: 100px;
 }
+
+.locationDiv{
+    display: flex;
+    justify-content: center;
+}
+#location{
+    position: absolute;
+    top: 80%;
+    color: white;
+}

@@ -103,6 +103,7 @@ map.on('load', () => {
         .then(data => {
             address = data.features[0].place_name
             console.log(address);
+            document.getElementById("location").innerHTML = address;
         });
 
     map.addImage('pulsing-dot', pulsingDot, { pixelRatio: 2 });
