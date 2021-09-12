@@ -2,85 +2,118 @@
 import smbus
 import math
 import time
- 
-# Register
+import requests
+
+# Power management registers
 power_mgmt_1 = 0x6b
 power_mgmt_2 = 0x6c
+
+#X rotation under 30 means walking stick is flat on the ground
+#over 30 means its somewhat up right
+
  
 def read_byte(reg):
     return bus.read_byte_data(address, reg)
  
 def read_word(reg):
+    #Read Accelerometer and Gyro value in 16-bit
     h = bus.read_byte_data(address, reg)
     l = bus.read_byte_data(address, reg+1)
-    value = (h << 8) + l
+    
+    #link higher and lower value together in a chain/series
+    value = ((h << 8) | l)
     return value
  
 def read_word_2c(reg):
     val = read_word(reg)
-    if (val >= 0x8000):
-        return -((65535 - val) + 1)
+#to get signed value from mpu6050
+    if(val > 32768):
+        return (val - 65536)
     else:
         return val
- 
+
+#function to calculate distance 
 def dist(a,b):
-    return math.sqrt((a*a)+(b*b))
- 
+    return math.sqrt((a*a)+(b*b)) # Return the square root of different numbers
+
+#function to get rotation of y  
 def get_y_rotation(x,y,z):
-    radians = math.atan2(x, dist(y,z))
-    return -math.degrees(radians)
- 
+    radians = math.atan2(x, dist(y,z)) # Return the arc tangent of x and distance of y and z in radians
+    return math.degrees(radians) # Convert from radians to degrees
+
+#function to get rotation of x
 def get_x_rotation(x,y,z):
-    radians = math.atan2(y, dist(x,z))
-    return math.degrees(radians)
+    radians = math.atan2(y, dist(x,z)) # Return the arc tangent of y and distance of x and z in radians
+    return math.degrees(radians) # Convert from radians to degrees
  
-bus = smbus.SMBus(1) # bus = smbus.SMBus(0) for Revision 1
-address = 0x68       # via i2cdetect
+bus = smbus.SMBus(1) # bus = smbus.SMBus(0) for Revision 1 board
+address = 0x68       # device address via i2cdetect
  
 # Activate to be able to address the module
 bus.write_byte_data(address, power_mgmt_1, 0)
+
 def gyroscope():
     
     print("Gyroscope")
     print("---------------------")
  
-    gyroscope_Xout = read_word_2c(0x43)
-    gyroscope_Yout = read_word_2c(0x45)
-    gyroscope_Zout = read_word_2c(0x47)
+    gyroscope_Xout = read_word_2c(0x43) #getting the raw value for x for gyroscope
+    gyroscope_Yout = read_word_2c(0x45) #getting the raw value for y for gyroscope
+    gyroscope_Zout = read_word_2c(0x47) #getting the raw value for z for gyroscope
+    
+    gyroscope_Xout_scaled = gyroscope_Xout / 32.8 #Full scale range +/- 1000 degree/C as per sensitivity scale factor of 131 LSB (Count)/°/s.
+    gyroscope_Yout_scaled = gyroscope_Yout / 32.8 #Full scale range +/- 1000 degree/C as per sensitivity scale factor of 131 LSB (Count)/°/s.
+    gyroscope_Zout_scaled = gyroscope_Zout / 32.8 #Full scale range +/- 1000 degree/C as per sensitivity scale factor of 131 LSB (Count)/°/s.
  
-    print("gyroscope_Xout: ", ("%5d" % gyroscope_Xout), " Scaled: ", (gyroscope_Xout / 131))
-    print("gyroscope_Yout: ", ("%5d" % gyroscope_Yout), " Scaled: ", (gyroscope_Yout / 131))
-    print("gyroscope_Zout: ", ("%5d" % gyroscope_Zout), " Scaled: ", (gyroscope_Zout / 131))
+    print("gyroscope_Xout: ", ("%5d" % gyroscope_Xout), " Scaled: ", gyroscope_Xout_scaled) 
+    print("gyroscope_Yout: ", ("%5d" % gyroscope_Yout), " Scaled: ", gyroscope_Yout_scaled)
+    print("gyroscope_Zout: ", ("%5d" % gyroscope_Zout), " Scaled: ", gyroscope_Zout_scaled) 
 
 def accelerometer():
+
     print()
     print("Accelerometer")
     print("---------------------")
      
-    Acceleration_Xout = read_word_2c(0x3b)
-    Acceleration_Yout = read_word_2c(0x3d)
-    Acceleration_Zout = read_word_2c(0x3f)
+    Acceleration_Xout = read_word_2c(0x3b) #getting the raw value for x for accelerometer
+    Acceleration_Yout = read_word_2c(0x3d) #getting the raw value for y for accelerometer
+    Acceleration_Zout = read_word_2c(0x3f) #getting the raw value for z for accelerometer
      
-    Acceleration_Xout_scaled = Acceleration_Xout / 16384.0
-    Acceleration_Yout_scaled = Acceleration_Yout / 16384.0
-    Acceleration_Zout_scaled = Acceleration_Zout / 16384.0
+    #y = 1 = |
+    #y = 0 = _
      
+    Acceleration_Xout_scaled = Acceleration_Xout / 2048 #Full scale range of +/- 16g with Sensitivity Scale Factor of 16,384 LSB(Count)/g.
+    Acceleration_Yout_scaled = Acceleration_Yout / 2048 #Full scale range of +/- 16g with Sensitivity Scale Factor of 16,384 LSB(Count)/g.
+    Acceleration_Zout_scaled = Acceleration_Zout / 2048 #Full scale range of +/- 16g with Sensitivity Scale Factor of 16,384 LSB(Count)/g.
+    
+    Acceleration = math.sqrt(Acceleration_Xout_scaled**2 + Acceleration_Yout_scaled**2 + Acceleration_Zout_scaled**2)
+
+    
     print ("Acceleration_Xout: ", ("%6d" % Acceleration_Xout), " Scaled: ", Acceleration_Xout_scaled)
     print ("Acceleration_Yout: ", ("%6d" % Acceleration_Yout), " Scaled: ", Acceleration_Yout_scaled)
     print ("Acceleration_Zout: ", ("%6d" % Acceleration_Zout), " Scaled: ", Acceleration_Zout_scaled)
+
+    print("Acceleration: ", Acceleration)
      
     print ("X Rotation: " , get_x_rotation(Acceleration_Xout_scaled, Acceleration_Yout_scaled, Acceleration_Zout_scaled))
     print ("Y Rotation: " , get_y_rotation(Acceleration_Xout_scaled, Acceleration_Yout_scaled, Acceleration_Zout_scaled))
     
+    # fall detection trigger
+    if (Acceleration > 11):
+
+        if(Acceleration_Xout_scaled, Acceleration_Yout_scaled < 1 and Acceleration_Zout_scaled > 1):
+        
+            print("Someone_fell")
+            requests.post('https://maker.ifttt.com/trigger/Someone_fell/with/key/dSP3lXtWtpcCZt2ekwEDu46QC4b5H4JzP5LTBx4SdM3') #send a warning message to someone 
+    
+
+
 if __name__ == '__main__':
     try:
         while True:
-            gyros= gyroscope()
+            #gyros= gyroscope()
             accele=accelerometer()
             time.sleep(3)
 
     except KeyboardInterrupt:
-        #turn off buzzer with interrupt
-        GPIO.output(buzzer,GPIO.LOW)
-        print("keyboard stop")
         GPIO.cleanup()    
