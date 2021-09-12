@@ -79,8 +79,8 @@ def accelerometer():
     Acceleration_Yout = read_word_2c(0x3d) #getting the raw value for y for accelerometer
     Acceleration_Zout = read_word_2c(0x3f) #getting the raw value for z for accelerometer
      
-    #y = 1 = |
-    #y = 0 = _
+    #y = 1 = | (Gyroscope standing)
+    #y = 0 = _ (Gyroscope lying flat)
      
     Acceleration_Xout_scaled = Acceleration_Xout / 2048 #Full scale range of +/- 16g with Sensitivity Scale Factor of 16,384 LSB(Count)/g.
     Acceleration_Yout_scaled = Acceleration_Yout / 2048 #Full scale range of +/- 16g with Sensitivity Scale Factor of 16,384 LSB(Count)/g.
