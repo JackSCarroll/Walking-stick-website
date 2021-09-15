@@ -131,3 +131,15 @@ map.on('load', () => {
         }
     });
 });
+function TTS()
+    {
+        if ('speechSynthesis' in window) {
+            // Speech Synthesis supported 🎉
+           }else{
+             // Speech Synthesis Not Supported 😣
+             alert("Sorry, your browser doesn't support text to speech!");
+           }
+           var msg = new SpeechSynthesisUtterance();
+        msg.text = address.toString();
+        window.speechSynthesis.speak(msg);
+    }
