@@ -98,13 +98,15 @@ def accelerometer():
     print ("X Rotation: " , get_x_rotation(Acceleration_Xout_scaled, Acceleration_Yout_scaled, Acceleration_Zout_scaled))
     print ("Y Rotation: " , get_y_rotation(Acceleration_Xout_scaled, Acceleration_Yout_scaled, Acceleration_Zout_scaled))
     
-    # fall detection trigger
+    # fall detection trigger using acceleration speed and acceleration position of x, y and z
     if (Acceleration > 11):
-
-        if(Acceleration_Xout_scaled, Acceleration_Yout_scaled < 1 and Acceleration_Zout_scaled > 1):
+        #if the gyroscope is lying flat the alert is sent, to make sure warning is not sent just because sudden increase in acceleration as this will happen often,
+        #because the person in on a walk
+        #we chose to put condition lying flat because the position of the gyroscope in the walking cane will be standing position (|), so when it falls it will be in flat position (-)
+        if(Acceleration_Xout_scaled < 1 and Acceleration_Yout_scaled < 1 and Acceleration_Zout_scaled > 1):
         
             print("Someone_fell")
-            requests.post('https://maker.ifttt.com/trigger/Someone_fell/with/key/dSP3lXtWtpcCZt2ekwEDu46QC4b5H4JzP5LTBx4SdM3') #send a warning message to someone 
+            requests.post('https://maker.ifttt.com/trigger/Someone_fell/with/key/dSP3lXtWtpcCZt2ekwEDu46QC4b5H4JzP5LTBx4SdM3') #send a warning message to someone from pushbullet using IFTTT 
     
 
 
