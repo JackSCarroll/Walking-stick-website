@@ -8,8 +8,9 @@ const server = app.listen(3000)
 const mongoose = require('mongoose');
 const User = require('./models/user')
 const bcrypt = require('bcryptjs');
+require('dotenv').config();
 
-mongoose.connect('mongodb+srv://antos:walkingStick@users.aiokz.mongodb.net/Users?retryWrites=true&w=majority', {
+mongoose.connect(process.env.API_KEY, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
 });
