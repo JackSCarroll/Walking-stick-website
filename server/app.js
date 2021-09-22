@@ -73,6 +73,7 @@ app.post('/api/register', async (req, res) => {
 io.sockets.on('connection', newConnection)
 function newConnection(socket) {
     console.log('new connection: ' + socket.id);
+    //putting client.on message here somewhat fixes it
 }
 
 client.on('connect', () => {
