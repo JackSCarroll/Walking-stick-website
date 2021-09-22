@@ -75,7 +75,8 @@
             })
          }).then((res) => res.json())
          if (result.status === 'ok') {
-            alert('Success')
+            alert('Success');
+            window.location.assign("./login.html");
          } else {
             alert(result.error)
          }

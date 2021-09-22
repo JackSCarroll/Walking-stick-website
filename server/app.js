@@ -26,6 +26,20 @@ var options = {
 app.use('/', express.static('../client', options));
 app.use(bodyParser.json());
 
+app.post('/api/login', async (req, res) => {
+    const { email, password } = req.body
+    const email = await User.findOne({ username }).lean()
+
+    if(!user){
+        return res.join({ status: 'error', error: 'Invalid username/password' });
+    }
+
+    if(await bcrypt.compare(password, email.password)){
+
+    }
+    res.json({ status: 'ok', data: 'lmao' });
+})
+
 app.post('/api/register', async (req, res) => {
     console.log(req.body);
     const { firstname, lastname, password: plainTextPassword, email, phone, serial } = req.body

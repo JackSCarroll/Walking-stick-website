@@ -11,20 +11,48 @@
       <h1>Login</h1>
       <form method="post">
         <div class="txt_field">
-          <input type="text" required>
+          <input type="text" required id="email">
           <span></span>
-          <label>Username</label>
+          <label>Email</label>
         </div>
         <div class="txt_field">
-          <input type="password" required>
+          <input type="password" required id="password">
           <span></span>
           <label>Password</label>
         </div>
         <div class="pass">Forgot Password?</div>
-        <input type="submit" value="Login">
+        <input type="submit" value="Login" id="comp">
         <div class="signup_link">
           Not a member? <a href="#" onclick="document.location='register.html'">Signup</a>
         </div>
+        <script>
+          const input = document.getElementById('comp');
+          input.addEventListener('click', loginUser);
+
+          async function loginUser(event){
+          event.preventDefault()
+          const email = document.getElementById('email').value;
+          const password = document.getElementById('password').value;
+        
+          const result = await fetch('/api/login', {
+            method: 'POST',
+            headers: {
+               'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              email,
+              password
+            })
+         }).then((res) => res.json())
+         if (result.status === 'ok') {
+            console.log('Got the token: ', result.data);
+            alert('Success')
+         } else {
+            alert(result.error)
+         }
+        }
+
+        </script>
       </form>
     </div>
 
