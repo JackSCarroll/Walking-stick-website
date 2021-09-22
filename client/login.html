@@ -11,12 +11,12 @@
       <h1>Login</h1>
       <form method="post">
         <div class="txt_field">
-          <input type="text" required id="email">
+          <input type="text" required id="email" autocomplete="off">
           <span></span>
           <label>Email</label>
         </div>
         <div class="txt_field">
-          <input type="password" required id="password">
+          <input type="password" required id="password" autocomplete="off">
           <span></span>
           <label>Password</label>
         </div>
@@ -46,12 +46,11 @@
          }).then((res) => res.json())
          if (result.status === 'ok') {
             console.log('Got the token: ', result.data);
-            alert('Success')
+            window.location.assign("./index.html");
          } else {
             alert(result.error)
          }
         }
-
         </script>
       </form>
     </div>

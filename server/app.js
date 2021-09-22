@@ -8,7 +8,9 @@ const server = app.listen(3000)
 const mongoose = require('mongoose');
 const User = require('./models/user')
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const JWT_SECRET = 'hijshf7897^&*#jdfksh82hjdkash';
 
 mongoose.connect(process.env.API_KEY, {
     useNewUrlParser: true,
@@ -28,20 +30,24 @@ app.use(bodyParser.json());
 
 app.post('/api/login', async (req, res) => {
     const { email, password } = req.body
-    const email = await User.findOne({ username }).lean()
+    const user = await User.findOne({ email }).lean()
 
     if(!user){
         return res.join({ status: 'error', error: 'Invalid username/password' });
     }
 
-    if(await bcrypt.compare(password, email.password)){
-
+    if(await bcrypt.compare(password, user.password)){
+            const token = jwt.sign({
+                id: user._id, 
+                email: email.email
+            }, JWT_SECRET
+        );
+        return res.json({ status:'ok', data: ''})
     }
-    res.json({ status: 'ok', data: 'lmao' });
+    res.json({ status: 'ok', data: token });
 })
 
 app.post('/api/register', async (req, res) => {
-    console.log(req.body);
     const { firstname, lastname, password: plainTextPassword, email, phone, serial } = req.body
     const password = await bcrypt.hash(plainTextPassword, 10);
 
@@ -54,7 +60,6 @@ app.post('/api/register', async (req, res) => {
             phone,
             serial
         });
-        console.log(response);
 
     } catch(error) {
         if(error.code === 11000) {
