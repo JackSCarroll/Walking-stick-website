@@ -9,8 +9,11 @@
   "author": "Anthony Papoutsis",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "gps": "^0.6.0",
+    "mongoose": "^6.0.7",
     "mqtt": "^4.2.8",
     "request-promise": "^4.2.6",
     "rquest": "^0.1.0",

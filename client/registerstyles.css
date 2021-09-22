@@ -147,7 +147,8 @@ body{
 
 .wrapper .form .inputfield .btn{
   width: 100%;
-   padding: 8px 10px;
+  height: 35px;
+  padding: 8px 10px;
   font-size: 15px; 
   border: 0px;
   background:  #fec107;
