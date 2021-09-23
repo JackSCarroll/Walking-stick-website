@@ -3,10 +3,15 @@ import smbus
 import math
 import time
 import requests
+# import matplotlib.pyplot as plt
 
 # Power management registers
 power_mgmt_1 = 0x6b
 power_mgmt_2 = 0x6c
+
+global falling
+falling = False
+fallingTime = 0
 
 #X rotation under 30 means walking stick is flat on the ground
 #over 30 means its somewhat up right
@@ -26,6 +31,7 @@ def read_word(reg):
  
 def read_word_2c(reg):
     val = read_word(reg)
+    
 #to get signed value from mpu6050
     if(val > 32768):
         return (val - 65536)
@@ -70,6 +76,8 @@ def gyroscope():
     print("gyroscope_Zout: ", ("%5d" % gyroscope_Zout), " Scaled: ", gyroscope_Zout_scaled) 
 
 def accelerometer():
+    global falling
+    # \n is placed to indicate EOL (End of Line)
 
     print()
     print("Accelerometer")
@@ -79,8 +87,8 @@ def accelerometer():
     Acceleration_Yout = read_word_2c(0x3d) #getting the raw value for y for accelerometer
     Acceleration_Zout = read_word_2c(0x3f) #getting the raw value for z for accelerometer
      
-    #y = 1 = | (Gyroscope standing)
-    #y = 0 = _ (Gyroscope lying flat)
+    #y = 1 = |
+    #y = 0 = _
      
     Acceleration_Xout_scaled = Acceleration_Xout / 2048 #Full scale range of +/- 16g with Sensitivity Scale Factor of 16,384 LSB(Count)/g.
     Acceleration_Yout_scaled = Acceleration_Yout / 2048 #Full scale range of +/- 16g with Sensitivity Scale Factor of 16,384 LSB(Count)/g.
@@ -94,28 +102,57 @@ def accelerometer():
     print ("Acceleration_Zout: ", ("%6d" % Acceleration_Zout), " Scaled: ", Acceleration_Zout_scaled)
 
     print("Acceleration: ", Acceleration)
+#     Y.append(Acceleration_Yout)
      
     print ("X Rotation: " , get_x_rotation(Acceleration_Xout_scaled, Acceleration_Yout_scaled, Acceleration_Zout_scaled))
     print ("Y Rotation: " , get_y_rotation(Acceleration_Xout_scaled, Acceleration_Yout_scaled, Acceleration_Zout_scaled))
     
-    # fall detection trigger using acceleration speed and acceleration position of x, y and z
+    # fall detection trigger using acceleration speed and aceleration position of x, y and z
     if (Acceleration > 11):
-        #if the gyroscope is lying flat the alert is sent, to make sure warning is not sent just because sudden increase in acceleration as this will happen often,
-        #because the person in on a walk
-        #we chose to put condition lying flat because the position of the gyroscope in the walking cane will be standing position (|), so when it falls it will be in flat position (-)
-        if(Acceleration_Xout_scaled < 1 and Acceleration_Yout_scaled < 1 and Acceleration_Zout_scaled > 1):
+        #potentially falling
+        falling = True
+    
+    #if the gyroscope is lying flat the alert is sent, to make sure warning is not sent just because sudden increase in acceleration as this will happen often,
+    #because the person in on a walk
+    #we chose to put condition lying flat because the position of the gyroscope in the walking cane will be standing position (|), so when it falls it will be in flat position (-)
+    
+    #if after potentially falling, and we get to a flat position, then we have fell.
+    if(Acceleration_Xout_scaled < 1 and Acceleration_Yout_scaled < 1 and Acceleration_Zout_scaled > 1 and falling is True): 
+    
+        print("Someone_fell")
+        requests.post('https://maker.ifttt.com/trigger/Someone_fell/with/key/dSP3lXtWtpcCZt2ekwEDu46QC4b5H4JzP5LTBx4SdM3') #alert sent to pushbullet using IFTTT
         
-            print("Someone_fell")
-            requests.post('https://maker.ifttt.com/trigger/Someone_fell/with/key/dSP3lXtWtpcCZt2ekwEDu46QC4b5H4JzP5LTBx4SdM3') #send a warning message to someone from pushbullet using IFTTT 
+
     
 
 
 if __name__ == '__main__':
     try:
         while True:
+            
             #gyros= gyroscope()
             accele=accelerometer()
-            time.sleep(3)
+            time.sleep(1)
+            
+            #if potentially falling, add time, at 5 seconds false alarm. in those 5 seconds it checks if the stick goes flat, which is called the fall detection function
+            #in accelerometer
+            if(falling):
+                print("Someones falling maybe - " + str(fallingTime))
+                fallingTime += 1
+                
+            if(fallingTime > 5):
+                #its been 5 seconds and its not flat yet. probably haven't fallen
+                falling = False
+                fallingTime = 0
+                
 
     except KeyboardInterrupt:
+#         print("keyboard stop, debug:")
+#         AddOne = 0
+#         for i in Y:
+#             TimeX.append(AddOne)
+#             AddOne += 1
+#             print(AddOne, ':', i, '\n')
+#         plt.plot(TimeX, Y)
+            
         GPIO.cleanup()    
