@@ -1,9 +1,0 @@
-{
-  "name": "smart-cane-website",
-  "version": "0.0.0",
-  "description": "SmartCaneWebsite",
-  "main": "server.js",
-  "author": {
-    "name": ""
-  }
-}

@@ -1,3 +1,0 @@
-C:\Users\User\Desktop\SIT312 System Design and Prototyping\website\SmartCaneWebsite\SmartCaneWebsite\obj\Debug\SmartCaneWebsite.njsproj.AssemblyReference.cache
-C:\Users\User\Desktop\SIT312 System Design and Prototyping\website\SmartCaneWebsite\SmartCaneWebsite\obj\Debug\SmartCaneWebsite.njsproj.CoreCompileInputs.cache
-C:\Users\User\Desktop\SIT312 System Design and Prototyping\website\SmartCaneWebsite\SmartCaneWebsite\bin\Microsoft.NodejsTools.WebRole.dll
