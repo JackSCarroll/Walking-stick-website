@@ -73,7 +73,7 @@ app.post('/api/register', async (req, res) => {
 io.sockets.on('connection', newConnection)
 function newConnection(socket) {
     console.log('new connection: ' + socket.id);
-    //putting client.on message here somewhat fixes it
+    io.sockets.emit("coords", latlong);
 }
 
 client.on('connect', () => {
@@ -84,6 +84,5 @@ client.on('connect', () => {
 client.on('message', (topic, message) => {
     latlong = message.toString();
     latlong = JSON.parse(latlong);
-    console.log(latlong.lat);
-    io.sockets.emit("coords", latlong);
+    //console.log(latlong.lat);
 });
