@@ -3,7 +3,13 @@ import smbus
 import math
 import time
 import requests
-# import matplotlib.pyplot as plt
+import os
+import smtplib
+
+SMTP_SERVER ='smtp.gmail.com' #email server
+SMTP_PORT = 587 #server port
+GMAIL_USERNAME = 'smartwalkingstick01@gmail.com'
+GMAIL_PASSWORD = 'WalkingStick01'
 
 # Power management registers
 power_mgmt_1 = 0x6b
@@ -15,8 +21,6 @@ fallingTime = 0
 
 #X rotation under 30 means walking stick is flat on the ground
 #over 30 means its somewhat up right
-
- 
 def read_byte(reg):
     return bus.read_byte_data(address, reg)
  
@@ -58,6 +62,32 @@ address = 0x68       # device address via i2cdetect
 # Activate to be able to address the module
 bus.write_byte_data(address, power_mgmt_1, 0)
 
+class Emailer:
+    def sendmail(self, recipient, subject, content):
+          
+        #Create Headers
+        headers = ["From: " + GMAIL_USERNAME, "Subject: " + subject, "To: " + recipient,
+                   "MIME-Version: 1.0", "Content-Type: text/html"]
+        headers = "\r\n".join(headers)
+  
+        #Connect to Gmail Server
+        session = smtplib.SMTP(SMTP_SERVER, SMTP_PORT)
+        session.ehlo()
+        session.starttls()
+        session.ehlo()
+  
+        #Login to Gmail
+        session.login(GMAIL_USERNAME, GMAIL_PASSWORD)
+  
+        #Send Email & Exit
+        session.sendmail(GMAIL_USERNAME, recipient, headers + "\r\n\r\n" + content)
+        session.quit
+  
+sender = Emailer()
+
+   
+
+
 def gyroscope():
     
     print("Gyroscope")
@@ -67,9 +97,9 @@ def gyroscope():
     gyroscope_Yout = read_word_2c(0x45) #getting the raw value for y for gyroscope
     gyroscope_Zout = read_word_2c(0x47) #getting the raw value for z for gyroscope
     
-    gyroscope_Xout_scaled = gyroscope_Xout / 32.8 #Full scale range +/- 1000 degree/C as per sensitivity scale factor of 131 LSB (Count)/°/s.
-    gyroscope_Yout_scaled = gyroscope_Yout / 32.8 #Full scale range +/- 1000 degree/C as per sensitivity scale factor of 131 LSB (Count)/°/s.
-    gyroscope_Zout_scaled = gyroscope_Zout / 32.8 #Full scale range +/- 1000 degree/C as per sensitivity scale factor of 131 LSB (Count)/°/s.
+    gyroscope_Xout_scaled = gyroscope_Xout / 32.8 #Full scale range +/- 1000 degree/C as per sensitivity scale factor of 131 LSB (Count)//s.
+    gyroscope_Yout_scaled = gyroscope_Yout / 32.8 #Full scale range +/- 1000 degree/C as per sensitivity scale factor of 131 LSB (Count)//s.
+    gyroscope_Zout_scaled = gyroscope_Zout / 32.8 #Full scale range +/- 1000 degree/C as per sensitivity scale factor of 131 LSB (Count)//s.
  
     print("gyroscope_Xout: ", ("%5d" % gyroscope_Xout), " Scaled: ", gyroscope_Xout_scaled) 
     print("gyroscope_Yout: ", ("%5d" % gyroscope_Yout), " Scaled: ", gyroscope_Yout_scaled)
@@ -117,16 +147,16 @@ def accelerometer():
     #we chose to put condition lying flat because the position of the gyroscope in the walking cane will be standing position (|), so when it falls it will be in flat position (-)
     
     #if after potentially falling, and we get to a flat position, then we have fell.
-    if(Acceleration_Xout_scaled < 1 and Acceleration_Yout_scaled < 1 and Acceleration_Zout_scaled > 1 and falling is True): 
-    
+    if(Acceleration_Xout_scaled < 1 and Acceleration_Yout_scaled < 3 and Acceleration_Zout_scaled > 1 and falling is True): 
         print("Someone_fell")
-        requests.post('https://maker.ifttt.com/trigger/Someone_fell/with/key/dSP3lXtWtpcCZt2ekwEDu46QC4b5H4JzP5LTBx4SdM3') #alert sent to pushbullet using IFTTT
-        
+        sendTo = 'anthony8121999@gmail.com'
+        emailSubject = "Someone fell"
+        emailContent = "Hey there someone fell, please go to our website to find their location."
+        sender.sendmail(sendTo, emailSubject, emailContent)
+        print("Email Sent")
+                    
 
-    
-
-
-if __name__ == '__main__':
+if __name__ == '__main__':   
     try:
         while True:
             
