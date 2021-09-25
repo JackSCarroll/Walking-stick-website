@@ -12,7 +12,7 @@ Script2 = '/home/pi/Desktop/Final/GyroscopeAccelerometer.py'
 
 try:
     while True:
-        if GPIO.input(16) == True:
+        if GPIO.input(16) == False:
             print("on")
             print("Running the distance and gyro")
             subprocess.run("python3 " + Script1 + " & python3 " + Script2, shell=True)

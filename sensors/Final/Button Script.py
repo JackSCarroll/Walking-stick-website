@@ -3,17 +3,9 @@ import time
 import os
 import paho.mqtt.client as mqtt 
 import threading
-#filter these
-#import pandas as pd
-#import geopandas as gpd
 import geopy
 from geopy.geocoders import Nominatim
 from geopy.extra.rate_limiter import RateLimiter
-
-#import matplotlib.pyplot as plt
-#import plotly_express as px
-#import tqdm
-#from tqdm._tqdm_notebook import tqdm_notebook
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setup(21, GPIO.IN, pull_up_down=GPIO.PUD_UP)
@@ -41,7 +33,7 @@ client.connect("broker.hivemq.com", 1883, 60)
 #client.loop_forever()
 
 while True: # Run forever
-    #print("running")
+    print("running")
     if GPIO.input(21) == False:
         lat = ''
         long = ''
@@ -53,7 +45,7 @@ while True: # Run forever
             
         lat = outputstringTest[0].split(':')[1]
         long = outputstringTest[1].split(':')[1][:-2]
-        
+       
         locator = Nominatim(user_agent="myGeocoder")
         coordinates = lat + ", " + long
         
@@ -64,5 +56,5 @@ while True: # Run forever
         
         
 
-        os.system("/home/pi/./speech.sh " + address)
+        os.system("/home/pi/./speech.sh " + "Your current location is " + address)
         time.sleep(1)
